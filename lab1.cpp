@@ -40,7 +40,7 @@ using namespace std;
 #include <X11/keysym.h>
 #include <GL/glx.h>
 #include "fonts.h"
-const int MAX_PARTICLES = 10000;
+const int MAX_PARTICLES = 100000;
 const float GRAVITY = 0.1;
 
 //some structures
@@ -64,8 +64,10 @@ class Global {
 	public:
 		int xres, yres;
 		Shape box[5];
-		Particle particle[MAX_PARTICLES];
+		Shape circle;
+ 		Particle particle[MAX_PARTICLES];
 		int n;
+		float radius;
 		Global() {
 			xres = 800;
 			yres = 600;
@@ -73,12 +75,16 @@ class Global {
 			for(int i = 0; i<5; i++)
 			{
 				box[i].width = 100;
-				box[i].height = 10;
+				box[i].height = 25;
 				box[i].center.x = 120 + i*65;
 				box[i].center.y = 500 - i*60;
 			}	    
 			n = 0;
-		}
+		        circle.radius = 150.0;
+ 			circle.center.x = 680.0;
+			circle.center.y = 20.0;
+                   
+	}
 } g;
 
 class X11_wrapper {
@@ -281,9 +287,9 @@ void movement()
 		{
 			Shape *s = &g.box[i]; //passign 5 boxes for collision detection
 			if(p->s.center.y < s->center.y + s->height && 
-					p->s.center.y > s->center.y - s->height && 
-					p->s.center.x > s->center.x - s->width && 
-					p->s.center.x < s->center.x + s->width)
+					(p->s.center.y > s->center.y - s->height) && 
+					(p->s.center.x > s->center.x - s->width) && 
+					(p->s.center.x < s->center.x + s->width))
 
 			{
 				p->velocity.y = -p->velocity.y;
@@ -292,9 +298,9 @@ void movement()
 			}
 			//cout << p->s.center.y << " " << p->s.center.x << endl;
 		}
+		
 
-
-
+                
 		//check for off-screen
 		if (p->s.center.y < 0.0) {
 			// cout << "off screen" << endl;
@@ -302,6 +308,7 @@ void movement()
 			g.particle[i] = g.particle[--g.n];
 
 		}
+	
 	}
 }
 
@@ -332,7 +339,7 @@ void render()
 		//cout << s->width << " " << s->height <<endl;
 	}	
 	Rect r; //Rect class from fonts.h
-	glEnable(GL_TEXTURE_2D); //enabling fonts
+	glEnable(GL_TEXTURE_2D); //enabling font texture
 
 
 	r.bot = 490;
@@ -376,7 +383,17 @@ void render()
 	//
 	//Draw your 2D text here
 
-
-
-
+        //Draw circle 
+        Shape * D = &g.circle;
+        glColor3ub(150,0,0);
+        int points =100;
+        GLfloat P2 = 2.0f * M_PI;
+        glBegin(GL_TRIANGLE_FAN);
+	glVertex2f(D->center.x, D->center.y);
+	for(int i = 0; i < points ; i++)
+	{
+	glVertex2f(D->center.x+(D->radius*cos(i*P2/points)), D->center.y+(D->radius*sin(i*P2/points)));
+        
+	} 
+	glEnd();
 }
