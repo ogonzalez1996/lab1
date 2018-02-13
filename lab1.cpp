@@ -71,6 +71,7 @@ class Global {
 		Global() {
 			xres = 800;
 			yres = 600;
+			radius = 0;
 			//define a box shape
 			for(int i = 0; i<5; i++)
 			{
@@ -81,8 +82,8 @@ class Global {
 			}	    
 			n = 0;
 		        circle.radius = 150.0;
- 			circle.center.x = 680.0;
-			circle.center.y = 20.0;
+ 			circle.center.x = 420.0;
+			circle.center.y = -20.0;
                    
 	}
 } g;
@@ -292,16 +293,29 @@ void movement()
 					(p->s.center.x < s->center.x + s->width))
 
 			{
+				p->s.center.y = s->center.y + s->height+0.1;
 				p->velocity.y = -p->velocity.y;
 				p->velocity.y *= 0.5;
 
 			}
 			//cout << p->s.center.y << " " << p->s.center.x << endl;
 		}
-		
-
-                
-		//check for off-screen
+	       /* 
+                Shape *s = &g.circle;
+		float  a1, a2, dist;
+                a1 =  p->s.center.x - s->center.x;
+ 		a2 =  p->s.center.y - s->center.y;	
+ 		dist = sqrt(a1*a1 + a2*a2);
+                if(dist <= s->radius)
+		{
+		p->s.center.x = s->center.x + a1/dist * s->radius*1.01;
+		p->s.center.x = s->center.y + a2/dist * s->radius*1.01;
+		//change velocity
+		p->velocity.x += (a1/dist)*2.0;
+		p->velocity.y += (a2/dist)*2.0;
+		}
+                */	
+     		//check for off-screen
 		if (p->s.center.y < 0.0) {
 			// cout << "off screen" << endl;
 
@@ -384,9 +398,10 @@ void render()
 	//Draw your 2D text here
 
         //Draw circle 
-        Shape * D = &g.circle;
+        /*
+	Shape * D = &g.circle;
         glColor3ub(150,0,0);
-        int points =100;
+        int points =50;
         GLfloat P2 = 2.0f * M_PI;
         glBegin(GL_TRIANGLE_FAN);
 	glVertex2f(D->center.x, D->center.y);
@@ -396,4 +411,5 @@ void render()
         
 	} 
 	glEnd();
+*/
 }
